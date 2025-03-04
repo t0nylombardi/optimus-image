@@ -24,6 +24,20 @@ func GetFilePath() (string, error) {
 	return filePath, nil
 }
 
+// GetDirectoryPath prompts the user to enter the directory path
+func GetDirectoryPath() (string, error) {
+	prompt := promptui.Prompt{
+		Label: "Enter the path to the directory",
+	}
+
+	dirPath, err := prompt.Run()
+	if err != nil {
+		return "", fmt.Errorf("failed to get directory path: %v", err)
+	}
+
+	return dirPath, nil
+}
+
 // AskThumbnailOption prompts the user if they want to generate a thumbnail
 func AskThumbnailOption() (bool, error) {
 	prompt := promptui.Select{

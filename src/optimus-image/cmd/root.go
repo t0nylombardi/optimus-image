@@ -36,8 +36,8 @@ func Execute(getSelectionFunc func() (string, error)) (string, error) {
 		err := processSingleFile()
 		return selection, err
 	case "Directory":
-		fmt.Println("Directory processing is not yet implemented.")
-		return selection, nil
+		err := processDirectory()
+		return selection, err
 	default:
 		return "", fmt.Errorf("invalid selection: %s", selection)
 	}
@@ -51,18 +51,6 @@ func processSingleFile() error {
 		return err
 	}
 
-	// // Ask user if they want to overwrite or rename the optimized file
-	// overwrite, err := utils.AskOverwriteOption()
-	// if err != nil {
-	// 	return err
-	// }
-
-	// // Ask user where they want to save the optimized image
-	// saveLocation, err := utils.AskSaveLocation()
-	// if err != nil {
-	// 	return err
-	// }
-
 	// Run optimization process
 	files := []string{filePath}
 
@@ -71,5 +59,26 @@ func processSingleFile() error {
 	}
 
 	fmt.Println("Image optimization complete!")
+	return nil
+}
+
+// processDirectory handles the workflow for optimizing all image files in a directory.
+func processDirectory() error {
+	// Get directory path from the user
+	dirPath, err := utils.GetDirectoryPath()
+	if err != nil {
+		return err
+	}
+
+	// Run optimization process
+	files, err := utils.GetFilesInDirectory(dirPath)
+	if err != nil {
+		return err
+	}
+
+	if err := optimizer.OptimizeFiles(files); err != nil {
+		return err
+	}
+
 	return nil
 }

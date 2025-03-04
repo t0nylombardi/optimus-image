@@ -51,27 +51,22 @@ func processSingleFile() error {
 		return err
 	}
 
-	// Ask user if they want to generate a thumbnail
-	createThumbnail, err := utils.AskThumbnailOption()
-	if err != nil {
-		return err
-	}
+	// // Ask user if they want to overwrite or rename the optimized file
+	// overwrite, err := utils.AskOverwriteOption()
+	// if err != nil {
+	// 	return err
+	// }
 
-	// Ask user if they want to overwrite or rename the optimized file
-	overwrite, err := utils.AskOverwriteOption()
-	if err != nil {
-		return err
-	}
-
-	// Ask user where they want to save the optimized image
-	saveLocation, err := utils.AskSaveLocation()
-	if err != nil {
-		return err
-	}
+	// // Ask user where they want to save the optimized image
+	// saveLocation, err := utils.AskSaveLocation()
+	// if err != nil {
+	// 	return err
+	// }
 
 	// Run optimization process
-	err = optimizer.OptimizeImage(filePath, createThumbnail, overwrite, saveLocation)
-	if err != nil {
+	files := []string{filePath}
+
+	if err := optimizer.OptimizeFiles(files); err != nil {
 		return err
 	}
 

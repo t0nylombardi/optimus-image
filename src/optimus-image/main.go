@@ -1,27 +1,31 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/t0nylombardi/optimus-image/src/optimus-image/cmd"
+	"github.com/t0nylombardi/optimus-image/src/optimus-image/internal/file"
 	"github.com/t0nylombardi/optimus-image/src/optimus-image/internal/optimizer"
-	"github.com/t0nylombardi/optimus-image/src/optimus-image/internal/utils"
+	"github.com/t0nylombardi/optimus-image/src/optimus-image/internal/progress"
 )
 
 func main() {
-	// Instantiate the dependencies
-	fileUtils := &utils.FileUtilsImpl{}
-	fileOptimizer := &optimizer.FileOptimizerImpl{}
+	fmt.Println("🚀 Optimus Image - Image Optimization CLI")
 
-	// Create an Executor instance with the dependencies
-	executor := &cmd.Executor{
-		FileUtils:     fileUtils,
-		FileOptimizer: fileOptimizer,
-	}
+	// Initialize dependencies
+	fileUtils := file.NewFileUtils()
+	imageProcessor := optimizer.DefaultImageProcessor{}
+	fileOptimizer := optimizer.NewFileOptimizer(&imageProcessor)
+	tracker := progress.NewTracker(1)
 
-	// Call Execute with GetUserSelection as the input function
-	_, err := executor.Execute(cmd.GetUserSelection)
+	executor := cmd.NewExecutor(fileUtils, fileOptimizer, tracker)
+
+	// Run CLI execution
+	selection, err := executor.Execute(cmd.GetUserSelection)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("❌ Error: %v", err)
 	}
+
+	fmt.Printf("✨ Operation completed: %s\n", selection)
 }

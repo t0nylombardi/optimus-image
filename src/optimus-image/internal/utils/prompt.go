@@ -7,7 +7,7 @@ import (
 )
 
 // GetFilePath prompts the user to enter the image file path
-func GetFilePath() (string, error) {
+func (f *FileUtilsImpl) GetFilePath() (string, error) {
 	prompt := promptui.Prompt{
 		Label: "Enter the path to the image file",
 	}
@@ -25,7 +25,7 @@ func GetFilePath() (string, error) {
 }
 
 // GetDirectoryPath prompts the user to enter the directory path
-func GetDirectoryPath() (string, error) {
+func (f *FileUtilsImpl) GetDirectoryPath() (string, error) {
 	prompt := promptui.Prompt{
 		Label: "Enter the path to the directory",
 	}

@@ -9,6 +9,11 @@ import (
 	"github.com/manifoldco/promptui"
 )
 
+type Executor struct {
+	FileUtils     utils.FileUtils
+	FileOptimizer optimizer.FileOptimizer
+}
+
 // GetUserSelection prompts the user to choose between processing a single file or a directory.
 func GetUserSelection() (string, error) {
 	prompt := promptui.Select{
@@ -24,7 +29,7 @@ func GetUserSelection() (string, error) {
 }
 
 // Execute runs the CLI workflow based on user selection.
-func Execute(getSelectionFunc func() (string, error)) (string, error) {
+func (e *Executor) Execute(getSelectionFunc func() (string, error)) (string, error) {
 	// Get user input for input type (Single File / Directory)
 	selection, err := getSelectionFunc()
 	if err != nil {
@@ -33,10 +38,10 @@ func Execute(getSelectionFunc func() (string, error)) (string, error) {
 
 	switch selection {
 	case "Single File":
-		err := processSingleFile()
+		err := e.processSingleFile()
 		return selection, err
 	case "Directory":
-		err := processDirectory()
+		err := e.processDirectory()
 		return selection, err
 	default:
 		return "", fmt.Errorf("invalid selection: %s", selection)
@@ -44,9 +49,9 @@ func Execute(getSelectionFunc func() (string, error)) (string, error) {
 }
 
 // processSingleFile handles the workflow for optimizing a single image file.
-func processSingleFile() error {
+func (e *Executor) processSingleFile() error {
 	// Get file path from the user
-	filePath, err := utils.GetFilePath()
+	filePath, err := e.FileUtils.GetFilePath()
 	if err != nil {
 		return err
 	}
@@ -54,7 +59,7 @@ func processSingleFile() error {
 	// Run optimization process
 	files := []string{filePath}
 
-	if err := optimizer.OptimizeFiles(files); err != nil {
+	if err := e.FileOptimizer.OptimizeFiles(files); err != nil {
 		return err
 	}
 
@@ -63,20 +68,20 @@ func processSingleFile() error {
 }
 
 // processDirectory handles the workflow for optimizing all image files in a directory.
-func processDirectory() error {
+func (e *Executor) processDirectory() error {
 	// Get directory path from the user
-	dirPath, err := utils.GetDirectoryPath()
+	dirPath, err := e.FileUtils.GetDirectoryPath()
 	if err != nil {
 		return err
 	}
 
 	// Run optimization process
-	files, err := utils.GetFilesInDirectory(dirPath)
+	files, err := e.FileUtils.GetFilesInDirectory(dirPath)
 	if err != nil {
 		return err
 	}
 
-	if err := optimizer.OptimizeFiles(files); err != nil {
+	if err := e.FileOptimizer.OptimizeFiles(files); err != nil {
 		return err
 	}
 

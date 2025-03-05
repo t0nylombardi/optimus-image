@@ -1,73 +1,88 @@
 package cmd
 
 import (
-	"bytes"
 	"errors"
-	"io"
 	"testing"
 
-	"github.com/manifoldco/promptui"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
-// TestPromptSelect simulates selecting an option from a prompt.
-func TestPromptSelect(t *testing.T) {
-	// Mock user input selecting the first option ("Single File")
-	input := "1\n"                                      // Simulating user pressing "1" and "Enter"
-	stdin := io.NopCloser(bytes.NewBufferString(input)) // Wrap with io.NopCloser
-
-	// Create a select prompt with mocked input
-	prompt := promptui.Select{
-		Label: "Choose input type",
-		Items: []string{"Single File", "Directory"},
-		Stdin: stdin, // Now it matches the expected type
-	}
-
-	_, result, err := prompt.Run()
-
-	// Assertions
-	assert.NoError(t, err, "Prompt should not return an error")
-	assert.Equal(t, "Single File", result, "User should have selected 'Single File'")
+type MockFileUtils struct {
+	mock.Mock
 }
 
-// TestPromptCancel simulates the user pressing Ctrl+C to exit the prompt.
-func TestPromptCancel(t *testing.T) {
-	// Simulate user pressing Ctrl+C by manually returning `ErrInterrupt`
-	mockPrompt := func() (string, error) {
-		return "", promptui.ErrInterrupt
-	}
-
-	_, err := mockPrompt()
-
-	// Assertions
-	assert.ErrorIs(t, err, promptui.ErrInterrupt, "Expected user to cancel the prompt")
+func (m *MockFileUtils) GetFilePath() (string, error) {
+	args := m.Called()
+	return args.String(0), args.Error(1)
 }
 
-// TestPromptValidation simulates a validation error scenario.
-// TestPromptValidation simulates a validation error scenario.
-func TestPromptValidation(t *testing.T) {
-	// Simulated user input sequence: "invalid" → "valid"
-	input := io.NopCloser(bytes.NewBufferString("valid\n"))
+func (m *MockFileUtils) GetDirectoryPath() (string, error) {
+	args := m.Called()
+	return args.String(0), args.Error(1)
+}
 
-	// Validation function
-	validate := func(input string) error {
-		if input == "valid" {
-			return nil
-		}
-		return errors.New("invalid input")
+func (m *MockFileUtils) GetFilesInDirectory(dirPath string) ([]string, error) {
+	args := m.Called(dirPath)
+	return args.Get(0).([]string), args.Error(1)
+}
+
+type MockFileOptimizer struct {
+	mock.Mock
+}
+
+func (m *MockFileOptimizer) OptimizeFiles(files []string) error {
+	args := m.Called(files)
+	return args.Error(0)
+}
+
+func TestExecute_SingleFile(t *testing.T) {
+	// Creating mocks for file utils and optimizer
+	mockFileUtils := new(MockFileUtils)
+	mockFileOptimizer := new(MockFileOptimizer)
+
+	// Mocking the GetUserSelection function
+	mockGetSelection := func() (string, error) {
+		return "Single File", nil
 	}
 
-	// Create the prompt
-	prompt := promptui.Prompt{
-		Label:    "Test Prompt",
-		Stdin:    input,
-		Validate: validate,
+	// Mocking the behavior of GetFilePath
+	mockFileUtils.On("GetFilePath").Return("test.jpg", nil)
+	// Mocking the behavior of OptimizeFiles
+	mockFileOptimizer.On("OptimizeFiles", []string{"test.jpg"}).Return(nil)
+
+	// Creating the executor with the mocked dependencies
+	executor := &Executor{
+		FileUtils:     mockFileUtils,
+		FileOptimizer: mockFileOptimizer,
 	}
 
-	// Simulate user retrying input
-	result, err := prompt.Run()
+	// Execute and test
+	result, err := executor.Execute(mockGetSelection)
+	assert.NoError(t, err)
+	assert.Equal(t, "Single File", result)
 
-	// Assertions
-	assert.NoError(t, err, "Prompt should not return an error after valid input")
-	assert.Equal(t, "valid", result, "Expected 'valid' as the user input")
+	// Assert that the mocks were called as expected
+	mockFileUtils.AssertExpectations(t)
+	mockFileOptimizer.AssertExpectations(t)
+}
+
+func TestProcessSingleFile_Failure(t *testing.T) {
+	// Creating mocks for file utils
+	mockFileUtils := new(MockFileUtils)
+
+	// Mocking GetFilePath to return an error
+	mockFileUtils.On("GetFilePath").Return("", errors.New("failed to get file path"))
+
+	// Creating the executor with the mocked dependencies
+	executor := &Executor{
+		FileUtils: mockFileUtils,
+	}
+
+	// Test failure in processing a single file
+	err := executor.processSingleFile()
+	assert.Error(t, err)
+	assert.Equal(t, "failed to get file path", err.Error())
+
+	mockFileUtils.AssertExpectations(t)
 }

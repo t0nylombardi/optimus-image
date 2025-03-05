@@ -5,9 +5,16 @@ import (
 	"path/filepath"
 )
 
-// GetFilesInDirectory returns a list of image files in the directory
+type FileUtils interface {
+	GetFilePath() (string, error)
+	GetDirectoryPath() (string, error)
+	GetFilesInDirectory(dirPath string) ([]string, error)
+}
+
+type FileUtilsImpl struct{}
+
 // GetFilesInDirectory returns all image files in the specified directory.
-func GetFilesInDirectory(dirPath string) ([]string, error) {
+func (f *FileUtilsImpl) GetFilesInDirectory(dirPath string) ([]string, error) {
 	var files []string
 	// Walk through the directory
 	err := filepath.Walk(dirPath, func(path string, info os.FileInfo, err error) error {

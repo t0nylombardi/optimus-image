@@ -9,8 +9,14 @@ import (
 	"github.com/t0nylombardi/optimus-image/src/optimus-image/internal/utils"
 )
 
+type FileOptimizer interface {
+	OptimizeFiles(images []string) error
+}
+
+type FileOptimizerImpl struct{}
+
 // OptimizeFiles processes a single file or multiple images with stacked progress bars.
-func OptimizeFiles(images []string) error {
+func (o *FileOptimizerImpl) OptimizeFiles(images []string) error {
 	if len(images) == 0 {
 		return fmt.Errorf("no images provided for optimization")
 	}

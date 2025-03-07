@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/manifoldco/promptui"
 	"github.com/t0nylombardi/optimus-image/src/optimus-image/internal/file"
 	"github.com/t0nylombardi/optimus-image/src/optimus-image/internal/optimizer"
 	"github.com/t0nylombardi/optimus-image/src/optimus-image/internal/progress"
@@ -16,7 +17,7 @@ type ExecutorImpl struct {
 }
 
 // NewExecutor creates a new ExecutorImpl instance.
-func NewExecutor(fileUtils file.FileUtils, fileOptimizer optimizer.FileOptimizer, tracker progress.ProgressTracker) Executor {
+func NewExecutor(fileUtils file.FileUtils, fileOptimizer optimizer.FileOptimizer, tracker progress.ProgressTracker) *ExecutorImpl {
 	return &ExecutorImpl{
 		FileUtils:     fileUtils,
 		FileOptimizer: fileOptimizer,
@@ -25,11 +26,10 @@ func NewExecutor(fileUtils file.FileUtils, fileOptimizer optimizer.FileOptimizer
 }
 
 // Execute runs the CLI workflow based on user selection.
-func (e *ExecutorImpl) Execute(getSelectionFunc func() (string, error)) (string, error) {
-	selection, err := getSelectionFunc()
-	if err != nil {
-		return "", err
-	}
+func (e *ExecutorImpl) Execute(getSelectionFunc func(PromptRunner) (string, error)) (string, error) {
+	selection, _ := getSelectionFunc(func(p promptui.Select) (int, string, error) {
+		return p.Run()
+	})
 
 	switch selection {
 	case "Single File":

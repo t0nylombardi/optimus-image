@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-	"github.com/t0nylombardi/optimus-image/src/optimus-image/cmd"
-	"github.com/t0nylombardi/optimus-image/src/optimus-image/internal/mocks"
-	"github.com/t0nylombardi/optimus-image/src/optimus-image/internal/optimizer"
+	"github.com/t0nylombardi/optimus-image/optimus-image/cmd"
+	"github.com/t0nylombardi/optimus-image/optimus-image/internal/mocks"
+	"github.com/t0nylombardi/optimus-image/optimus-image/internal/optimizer"
 )
 
 func TestMain_Success(t *testing.T) {

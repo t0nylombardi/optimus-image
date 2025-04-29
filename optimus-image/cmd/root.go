@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
-	"github.com/t0nylombardi/optimus-image/src/optimus-image/internal/file"
-	"github.com/t0nylombardi/optimus-image/src/optimus-image/internal/optimizer"
-	"github.com/t0nylombardi/optimus-image/src/optimus-image/internal/progress"
+	"github.com/t0nylombardi/optimus-image/optimus-image/internal/file"
+	"github.com/t0nylombardi/optimus-image/optimus-image/internal/optimizer"
+	"github.com/t0nylombardi/optimus-image/optimus-image/internal/progress"
 )
 
 // ExecutorImpl handles CLI execution.

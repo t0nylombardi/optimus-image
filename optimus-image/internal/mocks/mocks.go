@@ -2,7 +2,7 @@ package mocks
 
 import (
 	"github.com/stretchr/testify/mock"
-	"github.com/t0nylombardi/optimus-image/src/optimus-image/internal/progress"
+	"github.com/t0nylombardi/optimus-image/optimus-image/internal/progress"
 )
 
 // ✅ MockFileUtils implements file.FileUtils

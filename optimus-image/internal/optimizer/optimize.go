@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/t0nylombardi/optimus-image/src/optimus-image/internal/progress"
+	"github.com/t0nylombardi/optimus-image/optimus-image/internal/progress"
 )
 
 // FileOptimizerImpl is the default implementation of FileOptimizer.

@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/t0nylombardi/optimus-image/src/optimus-image/cmd"
-	"github.com/t0nylombardi/optimus-image/src/optimus-image/internal/file"
-	"github.com/t0nylombardi/optimus-image/src/optimus-image/internal/optimizer"
-	"github.com/t0nylombardi/optimus-image/src/optimus-image/internal/progress"
+	"github.com/t0nylombardi/optimus-image/optimus-image/cmd"
+	"github.com/t0nylombardi/optimus-image/optimus-image/internal/file"
+	"github.com/t0nylombardi/optimus-image/optimus-image/internal/optimizer"
+	"github.com/t0nylombardi/optimus-image/optimus-image/internal/progress"
 )
 
 func main() {

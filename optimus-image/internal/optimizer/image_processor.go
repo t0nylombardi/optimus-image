@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/t0nylombardi/optimus-image/src/optimus-image/internal/progress"
+	"github.com/t0nylombardi/optimus-image/optimus-image/internal/progress"
 )
 
 // ImageProcessor defines the interface for image processing.

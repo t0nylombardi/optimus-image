@@ -1,6 +1,6 @@
 package optimizer
 
-import "github.com/t0nylombardi/optimus-image/src/optimus-image/internal/progress"
+import "github.com/t0nylombardi/optimus-image/optimus-image/internal/progress"
 
 // FileOptimizer defines the contract for optimizing images.
 type FileOptimizer interface {
